@@ -1,0 +1,1 @@
+<template>  <div id="oee">{{message}}</div></template><script>    export default {        data(){            return{                message: "OEE"            }        }    }</script><style scoped>#oee{  float: left;}</style>
