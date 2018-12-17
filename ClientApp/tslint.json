@@ -20,7 +20,7 @@
       "singleline": "never",
       "multiline": {
         "objects": "never",     
-        "arrays": "always",
+        "arrays": "never",
         "functions": "never",
         "typeLiterals": "ignore"
       }

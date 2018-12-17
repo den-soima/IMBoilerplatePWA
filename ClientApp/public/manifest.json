@@ -1,6 +1,6 @@
 {
-  "name": "vue-app",
-  "short_name": "vue-app",
+  "name": "ClientApp",
+  "short_name": "ClientApp",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
