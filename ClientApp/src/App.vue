@@ -1,20 +1,50 @@
 <template>
-  <v-app>
+  <v-app id="inspire" light>
     <v-navigation-drawer v-model="sidebar" width="270" app>
-      <v-list>
-        <v-list-tile
-            v-for="item in menu"
-            :key="item.title"
-            :to="item.path">
+      <v-list
+          dense
+          v-for="item in menu"
+          :key="item.title"
+      >
+        <v-list-tile v-if="!item.children" :to="item.path">
           <v-list-tile-action>
             <v-icon>{{ item.icon }}</v-icon>
           </v-list-tile-action>
-          <v-list-tile-content>{{ item.title }}</v-list-tile-content>
+          <v-list-tile-content>
+            <v-list-tile-title>
+              {{ item.title }}
+            </v-list-tile-title>
+          </v-list-tile-content>
         </v-list-tile>
+        <v-list-group
+            v-else-if="item.children"
+            :prepend-icon="item.icon"
+            
+        >
+          <v-list-tile slot="activator">
+            <v-list-tile-content>
+              <v-list-tile-title>{{item.title}}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile
+              v-for="child in item.children"
+              :key="child.title"
+              :to="child.path"
+          >
+            <v-list-tile-action>
+              <!--<v-icon>{{ child.icon }}</v-icon>-->
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>
+                {{ child.title }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list-group>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar app>
-      <v-toolbar-side-icon @click="sidebar = !sidebar">
+      <v-toolbar-side-icon @click="switchSidebar()">
       </v-toolbar-side-icon>
       <v-toolbar-title>
         <router-link to="/modules" tag="span" style="cursor: pointer">
@@ -35,8 +65,8 @@
           <v-list>
             <v-list-tile
                 v-for="module in modules"
-                :key="module.path"
-                @click="loadModule(module)"
+                :key="module.title"
+                :to="module.path"
             >
               <v-list-tile-title>{{ module.title }}</v-list-tile-title>
             </v-list-tile>
@@ -54,12 +84,11 @@
         {{ item.title }}
       </v-btn>
     </v-toolbar>
-    <v-content>
+    <v-content app>
       <router-view>
-        
+
       </router-view>
     </v-content>
-
   </v-app>
 </template>
 
@@ -69,15 +98,14 @@
         data: () => {
             return {
                 //appTitle: 'Awesome App',
-                sidebar: false,
-
+                
                 userMenuItems: [
                     {title: 'Sign In', path: '/signin', icon: 'lock_open'}
                 ],
                 modules: [
-                    {title: 'Production', path: 'production', icon: 'lock_open'},
-                    {title: 'Line', path: 'line', icon: 'lock_open'},
-                    {title: 'Energy', path: 'energy', icon: 'lock_open'}
+                    {title: 'Production', path: '/production', icon: 'lock_open'},
+                    {title: 'Line', path: '/line', icon: 'lock_open'},
+                    {title: 'Energy', path: '/energy', icon: 'lock_open'}
                 ],
             }
         },
@@ -90,13 +118,19 @@
             },
             menu: function () {
                 return this.$store.getters.moduleMenu;
+            },
+            sidebar: {
+               get:    function () {
+                   return this.$store.state.sidebar;
+               },
+               set:    function () {
+                   
+               }
             }
         },
         methods: {
-            loadModule(module) {
-
-                this.$router.push({path: module.path,});
-                this.$store.commit('setModule', module.title);
+            switchSidebar() {
+                this.$store.commit('switchSidebar', !this.sidebar);
             }
         }
     }
